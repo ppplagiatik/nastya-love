@@ -2,18 +2,12 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Музыкальный фон</title>
+  <title>Музыкальная кнопка</title>
   <style>
     body {
-      margin: 0;
-      height: 100vh;
-      transition: background-color 0.1s;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background-color: black;
+      transition: background-color 0.1s linear;
     }
-    button {
+    #playButton {
       padding: 20px 40px;
       font-size: 24px;
       cursor: pointer;
@@ -22,48 +16,15 @@
 </head>
 <body>
   <button id="playButton">Нажми на меня</button>
-  <audio id="audio" src="music.mp3" crossorigin="anonymous"></audio>
+  <audio id="music" src="music.mp3"></audio>
 
   <script>
-    const audio = document.getElementById('audio');
-    const button = document.getElementById('playButton');
+    const audio = document.getElementById('music');
+    const playButton = document.getElementById('playButton');
 
-    button.addEventListener('click', () => {
+    playButton.addEventListener('click', () => {
       audio.play();
-      startVisualizer();
     });
-
-    function startVisualizer() {
-      const context = new (window.AudioContext || window.webkitAudioContext)();
-      const src = context.createMediaElementSource(audio);
-      const analyser = context.createAnalyser();
-
-      src.connect(analyser);
-      analyser.connect(context.destination);
-      analyser.fftSize = 256;
-
-      const bufferLength = analyser.frequencyBinCount;
-      const dataArray = new Uint8Array(bufferLength);
-
-      function animate() {
-        requestAnimationFrame(animate);
-        analyser.getByteFrequencyData(dataArray);
-
-        let sum = 0;
-        for (let i = 0; i < bufferLength; i++) {
-          sum += dataArray[i];
-        }
-        const average = sum / bufferLength;
-
-        const red = average + 100;
-        const green = 50;
-        const blue = 255 - average;
-
-        document.body.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
-      }
-
-      animate();
-    }
   </script>
 </body>
 </html>
