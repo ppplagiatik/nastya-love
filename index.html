@@ -26,23 +26,19 @@
       max-width: 200px;
       margin-bottom: 20px;
     }
-    .controls {
-      display: flex;
-      gap: 10px;
-    }
     button {
-      padding: 12px 24px;
+      padding: 10px 20px;
       font-size: 1rem;
       border: none;
-      border-radius: 8px;
-      background-color: #ff6f91;
-      color: white;
+      border-radius: 10px;
+      background-color: #fff;
+      color: #ff5e78;
       cursor: pointer;
-      transition: background-color 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      transition: background-color 0.3s;
     }
     button:hover {
-      background-color: #ff4e7b;
+      background-color: #ffe3e9;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-20px); }
@@ -53,14 +49,28 @@
 <body>
   <h1>Настя, я тебя люблю ❤️</h1>
   <img src="data:image/jpeg;base64,[ТВОЁ ИЗОБРАЖЕНИЕ]" alt="Настя">
-  
-  <!-- Музыка -->
-  <audio autoplay loop>
+
+  <button onclick="playMusic()">Воспроизвести музыку</button>
+
+  <audio id="bgMusic" loop>
     <source src="music.mp3" type="audio/mpeg">
     Ваш браузер не поддерживает воспроизведение аудио.
   </audio>
-  
+
+  <script>
+    function playMusic() {
+      const audio = document.getElementById('bgMusic');
+      audio.play();
+    }
+
+    // Попытка автозапуска при загрузке
+    window.addEventListener('load', () => {
+      const audio = document.getElementById('bgMusic');
+      audio.play().catch(() => {
+        // Браузер заблокировал автозапуск — пользователь должен нажать кнопку
+      });
+    });
+  </script>
 </body>
 </html>
-
 
