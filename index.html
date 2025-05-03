@@ -7,6 +7,7 @@
   <style>
     body {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
@@ -19,6 +20,21 @@
       color: #fff;
       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
       animation: fadeIn 2s ease-in-out;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #ff6f91;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    button:hover {
+      background-color: #ff4e7b;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-20px); }
@@ -27,6 +43,7 @@
   </style>
 </head>
 <body>
-  <h1>Настя, я тебя люблю ❤️</h1>
+  <h1>Настя, я не просто картинка ❤️</h1>
+  <button onclick="alert('Ты самая лучшая! ❤️')">Нажми меня</button>
 </body>
 </html>
