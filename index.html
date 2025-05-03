@@ -3,33 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <title>Музыкальная кнопка</title>
-  <style>
-    body {
-      transition: background-color 0.1s linear;
-    }
-    #playButton {
-      padding: 20px 40px;
-      font-size: 24px;
-      cursor: pointer;
-    }
-  </style>
 </head>
 <body>
   <button id="playButton">Нажми на меня</button>
-  <audio id="music" src="music.mp3"></audio>
+  <audio id="audio" src="music.mp3"></audio>
 
   <script>
-    const audio = document.getElementById('music');
-    const playButton = document.getElementById('playButton');
+    const button = document.getElementById('playButton');
+    const audio = document.getElementById('audio');
 
-    playButton.addEventListener('click', () => {
+    button.addEventListener('click', () => {
       audio.play();
     });
   </script>
 </body>
 </html>
-🎨 Смена фона под ритм музыки
-Чтобы фон изменялся в такт музыке, можно использовать Web Audio API для анализа аудиосигнала и изменения фона на основе его частотных характеристик:
+Убедитесь, что файл music.mp3 находится в той же директории, что и ваш HTML-файл. Если музыка не воспроизводится, проверьте путь к файлу и его наличие.
+
+🎨 Смена фона в такт музыке
+Чтобы фон менялся в ритме музыки, можно использовать Web Audio API для анализа аудиосигнала. Вот пример реализации:
 
 html
 Копировать
@@ -38,54 +30,58 @@ html
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Музыкальная визуализация</title>
+  <title>Музыка и фон</title>
   <style>
     body {
-      margin: 0;
-      height: 100vh;
       transition: background-color 0.1s linear;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
     #playButton {
-      padding: 20px 40px;
-      font-size: 24px;
-      cursor: pointer;
+      padding: 10px 20px;
+      font-size: 16px;
     }
   </style>
 </head>
 <body>
   <button id="playButton">Нажми на меня</button>
-  <audio id="music" src="music.mp3" crossorigin="anonymous"></audio>
+  <audio id="audio" src="music.mp3" crossorigin="anonymous"></audio>
 
   <script>
-    const audio = document.getElementById('music');
-    const playButton = document.getElementById('playButton');
+    const button = document.getElementById('playButton');
+    const audio = document.getElementById('audio');
 
-    playButton.addEventListener('click', () => {
-      audio.play();
+    let audioContext;
+    let analyser;
+    let source;
+    let dataArray;
 
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      const source = audioCtx.createMediaElementSource(audio);
-      const analyser = audioCtx.createAnalyser();
-      source.connect(analyser);
-      analyser.connect(audioCtx.destination);
-
-      analyser.fftSize = 256;
-      const bufferLength = analyser.frequencyBinCount;
-      const dataArray = new Uint8Array(bufferLength);
-
-      function animate() {
-        requestAnimationFrame(animate);
-        analyser.getByteFrequencyData(dataArray);
-        const avg = dataArray.reduce((a, b) => a + b) / bufferLength;
-        const hue = Math.floor((avg / 255) * 360);
-        document.body.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
+    button.addEventListener('click', () => {
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        source = audioContext.createMediaElementSource(audio);
+        analyser = audioContext.createAnalyser();
+        source.connect(analyser);
+        analyser.connect(audioContext.destination);
+        analyser.fftSize = 256;
+        const bufferLength = analyser.frequencyBinCount;
+        dataArray = new Uint8Array(bufferLength);
+        animate();
       }
-
-      animate();
+      audio.play();
     });
+
+    function animate() {
+      requestAnimationFrame(animate);
+      analyser.getByteFrequencyData(dataArray);
+      let sum = 0;
+      for (let i = 0; i < dataArray.length; i++) {
+        sum += dataArray[i];
+      }
+      const average = sum / dataArray.length;
+      const red = average + 100;
+      const green = 255 - average;
+      const blue = average;
+      document.body.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
+    }
   </script>
 </body>
 </html>
