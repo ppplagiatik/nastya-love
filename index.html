@@ -2,42 +2,21 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Музыкальная кнопка</title>
-</head>
-<body>
-  <button id="playButton">Нажми на меня</button>
-  <audio id="audio" src="music.mp3"></audio>
-
-  <script>
-    const button = document.getElementById('playButton');
-    const audio = document.getElementById('audio');
-
-    button.addEventListener('click', () => {
-      audio.play();
-    });
-  </script>
-</body>
-</html>
-Убедитесь, что файл music.mp3 находится в той же директории, что и ваш HTML-файл. Если музыка не воспроизводится, проверьте путь к файлу и его наличие.
-
-🎨 Смена фона в такт музыке
-Чтобы фон менялся в ритме музыки, можно использовать Web Audio API для анализа аудиосигнала. Вот пример реализации:
-
-html
-Копировать
-Редактировать
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-  <meta charset="UTF-8">
-  <title>Музыка и фон</title>
+  <title>Музыкальный фон</title>
   <style>
     body {
-      transition: background-color 0.1s linear;
+      margin: 0;
+      height: 100vh;
+      transition: background-color 0.1s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: black;
     }
-    #playButton {
-      padding: 10px 20px;
-      font-size: 16px;
+    button {
+      padding: 20px 40px;
+      font-size: 24px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -46,41 +25,44 @@ html
   <audio id="audio" src="music.mp3" crossorigin="anonymous"></audio>
 
   <script>
-    const button = document.getElementById('playButton');
     const audio = document.getElementById('audio');
-
-    let audioContext;
-    let analyser;
-    let source;
-    let dataArray;
+    const button = document.getElementById('playButton');
 
     button.addEventListener('click', () => {
-      if (!audioContext) {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        source = audioContext.createMediaElementSource(audio);
-        analyser = audioContext.createAnalyser();
-        source.connect(analyser);
-        analyser.connect(audioContext.destination);
-        analyser.fftSize = 256;
-        const bufferLength = analyser.frequencyBinCount;
-        dataArray = new Uint8Array(bufferLength);
-        animate();
-      }
       audio.play();
+      startVisualizer();
     });
 
-    function animate() {
-      requestAnimationFrame(animate);
-      analyser.getByteFrequencyData(dataArray);
-      let sum = 0;
-      for (let i = 0; i < dataArray.length; i++) {
-        sum += dataArray[i];
+    function startVisualizer() {
+      const context = new (window.AudioContext || window.webkitAudioContext)();
+      const src = context.createMediaElementSource(audio);
+      const analyser = context.createAnalyser();
+
+      src.connect(analyser);
+      analyser.connect(context.destination);
+      analyser.fftSize = 256;
+
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+
+      function animate() {
+        requestAnimationFrame(animate);
+        analyser.getByteFrequencyData(dataArray);
+
+        let sum = 0;
+        for (let i = 0; i < bufferLength; i++) {
+          sum += dataArray[i];
+        }
+        const average = sum / bufferLength;
+
+        const red = average + 100;
+        const green = 50;
+        const blue = 255 - average;
+
+        document.body.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
       }
-      const average = sum / dataArray.length;
-      const red = average + 100;
-      const green = 255 - average;
-      const blue = average;
-      document.body.style.backgroundColor = `rgb(${red}, ${green}, ${blue})`;
+
+      animate();
     }
   </script>
 </body>
