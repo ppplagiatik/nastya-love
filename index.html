@@ -26,6 +26,10 @@
       max-width: 200px;
       margin-bottom: 20px;
     }
+    .controls {
+      display: flex;
+      gap: 10px;
+    }
     button {
       padding: 12px 24px;
       font-size: 1rem;
@@ -48,7 +52,29 @@
 </head>
 <body>
   <h1>Настя, я тебя люблю ❤️</h1>
-  <img src="https://i.imgur.com/BUNc9gR.png" alt="Зайчик">
-  <button onclick="alert('Ты самая лучшая! ❤️')">Нажми меня</button>
+  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Grey_rabbit.jpg/320px-Grey_rabbit.jpg" alt="Зайчик">
+  <div class="controls">
+    <button onclick="playMusic()">Играть</button>
+    <button onclick="pauseMusic()">Пауза</button>
+  </div>
+
+  <audio id="loveMusic">
+    <source src="https://archive.org/download/miyagi-bosh-marmalade/Miyagi%20%26%20Bosh%20-%20Marmalade.mp3" type="audio/mpeg">
+    Ваш браузер не поддерживает аудио.
+  </audio>
+
+  <script>
+    const audio = document.getElementById('loveMusic');
+
+    function playMusic() {
+      audio.play();
+      alert('Ты самая лучшая! ❤️');
+    }
+
+    function pauseMusic() {
+      audio.pause();
+    }
+  </script>
 </body>
 </html>
+
