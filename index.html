@@ -2,29 +2,109 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Музыкальная кнопка</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Настя ❤️</title>
   <style>
     body {
-      transition: background-color 0.1s linear;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      transition: background 2s linear;
+      font-family: 'Segoe UI', sans-serif;
     }
-    #playButton {
-      padding: 20px 40px;
-      font-size: 24px;
+    h1 {
+      font-size: 3rem;
+      color: #fff;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+      animation: fadeIn 2s ease-in-out;
+      margin-bottom: 20px;
+    }
+    img {
+      max-width: 200px;
+      margin-bottom: 20px;
+    }
+    .controls {
+      display: flex;
+      gap: 10px;
+    }
+    button {
+      padding: 12px 24px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #ff6f91;
+      color: white;
       cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    button:hover {
+      background-color: #ff4e7b;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
-  <button id="playButton">Нажми на меня</button>
-  <audio id="music" src="music.mp3"></audio>
+  <h1>Настя, я тебя люблю ❤️</h1>
+  <img src="IMAGE_SRC_HERE" alt="Любимая Настя">
+  <div class="controls">
+    <button id="playButton">▶ Нажми на меня</button>
+    <button id="pauseButton">⏸ Пауза</button>
+    <button id="loopButton">🔁 Повтор</button>
+  </div>
+  <audio id="loveSong" src="music.mp3"></audio>
 
   <script>
-    const audio = document.getElementById('music');
-    const playButton = document.getElementById('playButton');
+    const audio = document.getElementById("loveSong");
+    const playButton = document.getElementById("playButton");
+    const pauseButton = document.getElementById("pauseButton");
+    const loopButton = document.getElementById("loopButton");
+    const body = document.body;
 
-    playButton.addEventListener('click', () => {
+    const gradients = [
+      'linear-gradient(135deg, #ff9a9e, #fad0c4)',
+      'linear-gradient(135deg, #a18cd1, #fbc2eb)',
+      'linear-gradient(135deg, #f6d365, #fda085)',
+      'linear-gradient(135deg, #84fab0, #8fd3f4)',
+      'linear-gradient(135deg, #fccb90, #d57eeb)'
+    ];
+
+    let intervalId;
+    let gradientIndex = 0;
+
+    function startBackgroundChange() {
+      intervalId = setInterval(() => {
+        gradientIndex = (gradientIndex + 1) % gradients.length;
+        body.style.background = gradients[gradientIndex];
+      }, 5000); // смена каждые 5 секунд
+    }
+
+    function stopBackgroundChange() {
+      clearInterval(intervalId);
+    }
+
+    playButton.addEventListener("click", () => {
       audio.play();
+      startBackgroundChange();
     });
+
+    pauseButton.addEventListener("click", () => {
+      audio.pause();
+      stopBackgroundChange();
+    });
+
+    loopButton.addEventListener("click", () => {
+      audio.loop = !audio.loop;
+      alert(audio.loop ? "Режим повтора включён 🔁" : "Режим повтора выключен ⏹");
+    });
+
+    audio.addEventListener("ended", () => stopBackgroundChange());
   </script>
 </body>
 </html>
